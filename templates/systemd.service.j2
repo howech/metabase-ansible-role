@@ -1,0 +1,16 @@
+[Unit]
+Description=Metabase Web
+After=network-online.target
+
+[Service]
+User={{ metabase_user }}
+Group={{ metabase_group }}
+
+WorkingDir={{ metabase_root_dir }}
+ExecStart=/bin/bash -c '. "{{ metabase_conf_dir }}/config.sh" && java -jar {{ metabase_root_dir }}/metabase.jar >> "{{ metabase_log_dir }}/metabase.log" 2>&1'
+Restart=on-failure
+StartLimitIntervalSec=10
+
+[Install]
+WantedBy=multi-user.target
+Alias=metabase-web

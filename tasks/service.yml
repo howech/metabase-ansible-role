@@ -1,8 +1,15 @@
 ---
 
-- name: Ensure metabase service is defined
+- name: Ensure metabase upstart service is defined
   template: src="templates/upstart.conf.j2" dest="/etc/init/metabase.conf" owner=root group=root mode=0644
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and ansible_service_mgr != "systemd"
+  tags: [upstart]
+  notify:
+    - restart metabase
+
+- name: Ensure metabase systemd service is defined
+  template: src="templates/systemd.service.j2" dest="/etc/systemd/system/metabase.service" owner=root group=root mode=0644
+  when: ansible_os_family == "Debian" and ansible_service_mgr == "systemd"
   tags: [upstart]
   notify:
     - restart metabase
